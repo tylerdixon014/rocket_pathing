@@ -4,7 +4,7 @@ import pandas as pd
 from math_stuff import math_functions
 
 
-file_path = "rocket simulation sample points.csv"
+
 
 def main():
     
@@ -31,16 +31,6 @@ def main():
 
     plt.show()
 
-def read_csv(file_path):
-    df = pd.read_csv(file_path)
-
-    pos_points = df["position points"].apply(lambda s: list(map(float, s.split(",")))).to_numpy()
-    pos_points = np.vstack(pos_points)
-
-    con_points = df["control points"].apply(lambda s: list(map(float, s.split(",")))).to_numpy()
-    con_points = np.vstack(con_points)
-
-    return pos_points, pos_points
 
 
 

@@ -1,6 +1,9 @@
 import math
 import numpy as np
 import csv
+import bisect
+
+#t = [0][6]
 
 file_path = "sample.csv"
 
@@ -42,22 +45,33 @@ def get_rows_from_dict(data_dict, n):
     
     return [data_dict[n], data_dict[n+1]]
 
+def index_of_le(list,t):
+    idt = bisect.bisect_right(list, t) - 1
+    if 0 <= idt <= max(list):
+        return idt
+    else:
+        return -1
+
 def bezier_cubic(pos0, con0, con1, pos1, t): # goes from pos0 to con0, arrives at pos1 from con1
-    point = (1 - t)**3 * pos0 + 3 * (1-t)**2 * t * con0 + 3 * (1 - t) * t**2 * con1 + t**3 * pos1
+    point = (1 - t)**3 * pos0 + 3 * (1-t)**2 * t * con0 + 3 * (1 - t) * t**2 * (2*pos1 - con1) + t**3 * pos1
 
     return point
 
 def bezier_spline(filename, t):
     point_dict = csv_to_dict(filename)
-    i = 0
-    while i <= len(point_dict) - 2:
-        array = get_rows_from_dict(point_dict,i)
-        x = bezier_cubic(array[0][0],array[0][3],array[1][0],array[1][3],t)
-        y = bezier_cubic(array[0][1],array[0][4],array[1][1],array[1][4],t)
-        z = bezier_cubic(array[0][2],array[0][5],array[1][2],array[1][5],t)
+    time_list = [row[6] for row in point_dict.values()]
+    section = index_of_le(time_list,t)
+    
+    array = get_rows_from_dict(point_dict,section)
+    time0 = array[0][6]
+    time1 = array[1][6]
+    tnorm = (t - time0) /  (time1 - time0)
 
-        print(x,y,z)
+    if time0 <= t <= time1:
+        x = bezier_cubic(array[0][0],array[0][3],array[1][0],array[1][3],tnorm)
+        y = bezier_cubic(array[0][1],array[0][4],array[1][1],array[1][4],tnorm)
+        z = bezier_cubic(array[0][2],array[0][5],array[1][2],array[1][5],tnorm)
 
-        i += 1
+    print(x,y,z)
 
-bezier_spline(file_path,0)
+bezier_spline(file_path,2.9)
