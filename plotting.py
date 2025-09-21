@@ -1,37 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import pandas as pd
-from math_stuff import math_functions
+from mpl_toolkits.mplot3d import Axes3D
+from silly_billy_math import BezierSpline
 
+spline = BezierSpline("sample.csv")
 
+t0, t1 = spline.times[0], spline.times[-1]
+ts = np.linspace(t0, t1, 300)
 
+pts = [spline.point(t) for t in ts]
+xs, ys, zs = zip(*pts)
 
-def main():
-    
-
-    # Parameter t
-    t = np.linspace(0, 1,20)
-
-    x = 0
-    y = t
-    z = 0
-
-    # Set up figure and 3D axis
-    fig = plt.figure(figsize=(8, 6))
-    ax = fig.add_subplot(111, projection="3d")
-
-    # Plot parametric line
-    ax.plot3D(x, y, z, color="blue", linewidth=2)
-
-    # Labels and title
-    ax.set_title("3D Parametric Line: Helix")
-    ax.set_xlabel("x")
-    ax.set_ylabel("y")
-    ax.set_zlabel("z")
-
-    plt.show()
-
-
-
-
-main()
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.plot(xs, ys, zs)
+plt.show()
