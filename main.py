@@ -1,7 +1,8 @@
-import math_stuff
 from plotting import main
-import math
-import numpy as np
-import matplotlib.pyplot as plt
 
-main((0,0),(1,1))
+
+
+
+file_path = "rocket simulation sample points.csv"
+
+main(file_path)
