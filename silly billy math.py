@@ -3,8 +3,6 @@ import numpy as np
 import csv
 import bisect
 
-#t = [0][6]
-
 file_path = "sample.csv"
 
 def csv_to_dict(filename):
