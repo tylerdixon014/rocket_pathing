@@ -1,8 +1,6 @@
 import csv
 import bisect
 
-
-
 #make a dictionary from the csv (this method i found online doesnt use pandas, but it works so im not gonna mess with it)
 def csv_to_dict(filename):
     data_dict = {}
