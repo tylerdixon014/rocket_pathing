@@ -1,10 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-from math_stuff import math_functions
-
-
-
 
 def main():
     
