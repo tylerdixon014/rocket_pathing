@@ -1,6 +1,8 @@
 import csv
 import bisect
 
+
+
 #make a dictionary from the csv (this method i found online doesnt use pandas, but it works so im not gonna mess with it)
 def csv_to_dict(filename):
     data_dict = {}
@@ -66,4 +68,5 @@ file_path = "sample.csv"
 point_dict = csv_to_dict(file_path)
 
 #the argument for bezier_spline can range from the lowest to largest value in the time column
-print(bezier_spline(2.9))
+#print(bezier_spline(2.9))
+
