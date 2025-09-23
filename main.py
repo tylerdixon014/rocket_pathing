@@ -1,8 +1,5 @@
-from plotting import main
+x = []
 
+x.append(1)
 
-
-
-file_path = "rocket simulation sample points.csv"
-
-main(file_path)
+print(x)
