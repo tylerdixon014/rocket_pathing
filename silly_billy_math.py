@@ -104,9 +104,9 @@ class Spline:
         return s**3 * pos0 + 3 * s**2 * t * con0 + 3 * s * t**2 * (2*pos1 - con1) + t**3 * pos1
 
     @staticmethod
-    def bezier_cubic_derivative(pos0, con0, con1, pos1, t):
+    def bezier_cubic_derivative(pos0, con0, con1, pos1, t): #P0,P1,P2,P3
         s = 1 - t
-        return 3 * s ** 2 * (con0 - pos0) + 6 * s * t * (con1 - con0) + 3 * t ** 2 * (pos1 - con1)
+        return 3*(s*s)*(con0 - pos0) + 6*s*t*(con1 - con0) + 3 * (t*t) * (pos1 - con1)
 
     def evaluate(self,t):
         #determine what segment t lies in
@@ -150,7 +150,10 @@ class Spline:
         y = Spline.bezier_cubic_derivative(array[0][1],array[0][4],array[1][4],array[1][1],tnorm)
         z = Spline.bezier_cubic_derivative(array[0][2],array[0][5],array[1][5],array[1][2],tnorm)
 
-        return x,y,z
+        # #normalize output
+        # m = np.sqrt(x*x + y*y + z*z)
+
+        return x, y, z
 
     def total_rotation(self,t):
         angle_list = self.angle_list
@@ -176,6 +179,32 @@ class Spline:
         
         return np.trapezoid(angle_list, time_list)
         
-a = (1,2,3)
-b = (4,5,6)
-np.cross
+    def sensor(self,sensor,t):
+        axis0 = self.tangent_axis(min(self.time_list))
+        axis1 = self.tangent_axis(t)
+        cross = np.cross(axis0,axis1)
+
+        q0 = Quaternion(cross[0],cross[1],cross[2], 1 + np.dot(axis0,axis1)).normalize()
+        q1 = Quaternion.axis_angle_to_quat(self.tangent_axis(t),self.total_rotation(t))
+        w = Quaternion.mult(q1,q0)
+
+        rotated_sensor = Quaternion.rotate_vector(sensor,w)
+        translation = self.evaluate(t)
+        x = rotated_sensor[0] + translation[0]
+        y = rotated_sensor[1] + translation[1]
+        z = rotated_sensor[2] + translation[2]
+
+        return axis1
+
+filepath = "sample.csv"
+sensor = [0.1,0.1,0.25]
+
+spline = Spline(filepath)
+
+P0 = [0,0,0]
+C0 = [0,0,1]
+C1 = [2,2,2]
+P1 = [0,1,1]
+
+a = 2
+print(Spline.bezier_cubic_derivative(P0[a],C0[a],C1[a],P1[a],0.9))
