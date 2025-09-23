@@ -105,8 +105,7 @@ class Spline:
 
     @staticmethod
     def bezier_cubic_derivative(pos0, con0, con1, pos1, t): #P0,P1,P2,P3
-        s = 1 - t
-        return 3*(s*s)*(con0 - pos0) + 6*s*t*(con1 - con0) + 3 * (t*t) * (pos1 - con1)
+        return -3 * (1 - t)**2 * pos0 + 3 * (1 - 4*t + 3*t**2)*con0 + 3 * (2 * t - 3 * t**2) * (2 * pos1 - con1) + 3*t**2 * pos1
 
     def evaluate(self,t):
         #determine what segment t lies in
@@ -150,10 +149,10 @@ class Spline:
         y = Spline.bezier_cubic_derivative(array[0][1],array[0][4],array[1][4],array[1][1],tnorm)
         z = Spline.bezier_cubic_derivative(array[0][2],array[0][5],array[1][5],array[1][2],tnorm)
 
-        # #normalize output
-        # m = np.sqrt(x*x + y*y + z*z)
+        #normalize output
+        m = np.sqrt(x*x + y*y + z*z)
 
-        return x, y, z
+        return x/m, y/m, z/m
 
     def total_rotation(self,t):
         angle_list = self.angle_list
@@ -194,17 +193,4 @@ class Spline:
         y = rotated_sensor[1] + translation[1]
         z = rotated_sensor[2] + translation[2]
 
-        return axis1
-
-filepath = "sample.csv"
-sensor = [0.1,0.1,0.25]
-
-spline = Spline(filepath)
-
-P0 = [0,0,0]
-C0 = [0,0,1]
-C1 = [2,2,2]
-P1 = [0,1,1]
-
-a = 2
-print(Spline.bezier_cubic_derivative(P0[a],C0[a],C1[a],P1[a],0.9))
+        return x,y,z

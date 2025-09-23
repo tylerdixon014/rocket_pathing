@@ -2,14 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from silly_billy_math import Spline
 
-filepath = "sample.csv"
-sensor = [0.1,0.1,0.25]
 
-spline = Spline(filepath)
-
-def main():
+def plot(filepath: str, sensor, sample_count: int):
     # Parameter t
-    t = np.linspace(min(spline.time_list), max(spline.time_list) - 0.1,100)
+    spline = Spline(filepath)
+    t = np.linspace(min(spline.time_list), max(spline.time_list) - 0.001,sample_count)
 
     x = []
     y = []
@@ -35,13 +32,12 @@ def main():
     # Plot parametric line
     ax.plot3D(x, y, z, color="blue", linewidth=2)
     ax.plot3D(sx, sy, sz, color="red", linewidth=2)
+    
 
     # Labels and title
-    ax.set_title("Bezier Spline")
+    ax.set_title("Sensor Rotation along a Bezier Spline")
     ax.set_xlabel("x")
     ax.set_ylabel("y")
     ax.set_zlabel("z")
 
     plt.show()
-
-main()
