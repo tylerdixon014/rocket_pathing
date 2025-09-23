@@ -1,6 +1,6 @@
 import numpy as np
 import quaternion as qtn 
-from silly_billy_math import 
+from silly_billy_math import Spline
 
 def _safe_normalize(v, eps=1e-12):
     n = np.linalg.norm(v)
@@ -51,3 +51,15 @@ def quaternion_from_tangent_and_roll(t_vec, roll_rad, world_up=np.array([0.0, 0.
     q_final = q_roll * q_look
     return q_final
 
+
+filepath = "sample.csv"
+sensor = [1,1,1]
+
+spline = Spline(filepath)
+
+t = 1 
+tangent = spline.evaluate(t)
+angle = spline.total_rotation(t)
+q = quaternion_from_tangent_and_roll(tangent, angle)
+
+print(q)

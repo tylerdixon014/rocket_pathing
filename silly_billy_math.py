@@ -1,8 +1,6 @@
 import csv
 import bisect
-import math
 import numpy as np
-import quaternion
 
 class Spline:
     def __init__(self, filepath):
@@ -116,21 +114,3 @@ class Spline:
         
         return np.trapezoid(angle_list, time_list)
         
-    def sensor_rotation(self,sensor,t): #sensor = [x,y,z]
-        q0 = Quaternion.axis_angle_to_quat(self.tangent_axis(min(self.time_list)),0).normalize()
-        q1 = Quaternion.axis_angle_to_quat(self.tangent_axis(t),self.total_rotation(t)).normalize()
-
-        q = Quaternion.difference(q0,q1)
-
-        sensor_rotated = Quaternion.rotate_vector(sensor,q)
-        com = self.evaluate(t)
-        x = com[0] + sensor_rotated[0]
-        y = com[1] + sensor_rotated[1]
-        z = com[2] + sensor_rotated[2]
-
-        return x,y,z
-        
-sensor = (1,2,3)
-q = np.quaternion(20,1,8,12)
-
-print(quaternion.rotate_vectors(q,sensor))
