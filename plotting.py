@@ -9,7 +9,7 @@ spline = Spline(filepath)
 
 def main():
     # Parameter t
-    t = np.linspace(min(spline.time_list), max(spline.time_list) - 0.1,100)
+    t = np.linspace(min(spline.time_list), max(spline.time_list) - 0.1,2000)
 
     x = []
     y = []
