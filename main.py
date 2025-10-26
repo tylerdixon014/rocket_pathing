@@ -1,7 +1,7 @@
 from plotting import plot
 
-filepath = "sample_3.csv"
-sensor = [0.1,0.1,0.25]
+filepath = "sample.csv"
+sensor = [0.1,0.1,0.125]
 sample_count = 1000
 
 # To get just the numbers:

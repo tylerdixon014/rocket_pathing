@@ -11,37 +11,49 @@ class Quaternion:
         self.w = w
 
     def output_as_list(self):
-        return [self.x, self.y, self.z, self.w]
+        quat = [self.x, self.y, self.z, self.w]
+        return quat
     
     def magnitude(self):
-        return math.sqrt(self.x * self.x + self.y * self.y + self.z * self.z + self.w * self.w)
+        m = math.sqrt(self.x * self.x + self.y * self.y + self.z * self.z + self.w * self.w)
+        return m
     
     def normalize(self):
         m = self.magnitude()
         if m == 0:
-            return Quaternion(0,0,0,0)
-        return Quaternion(self.x / m, self.y / m, self.z / m, self.w / m)
+            quat = Quaternion(0,0,0,0)
+            return quat
+        quat = Quaternion(self.x / m, self.y / m, self.z / m, self.w / m)
+        return quat
     
     @staticmethod
     def identity():
-        return Quaternion(0,0,0,1)
+        quat = Quaternion(0,0,0,1)
+        return quat
     
     def scale(self, s: float):
-        return Quaternion(self.x * s, self.y * s, self.z * s, self.w * s)
+        quat = Quaternion(self.x * s, self.y * s, self.z * s, self.w * s)
+        return quat
     
     @classmethod
     def mult(cls, a, b):
         if not isinstance(a, cls) or not isinstance(b, cls):
             raise TypeError("Both inputs must be instances of the Quaternion class.")
-        return Quaternion(a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y, a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x, a.w*b.z + a.x*b.y - a.y*b.x + a.z*b.w, a.w*b.w - a.x*b.x - a.y*b.y - a.z*b.z)
+        quat = Quaternion(a.w*b.x + a.x*b.w + a.y*b.z - a.z*b.y,
+                        a.w*b.y - a.x*b.z + a.y*b.w + a.z*b.x,
+                        a.w*b.z + a.x*b.y - a.y*b.x + a.z*b.w,
+                        a.w*b.w - a.x*b.x - a.y*b.y - a.z*b.z)
+        return quat
     
     @staticmethod
     def axis_angle_to_quat(axis, angle): #axis = [x,y,z]
         s = math.sin(angle / 2)
-        return Quaternion(axis[0] * s, axis[1] * s, axis[2] * s, math.cos(angle / 2))
+        quat = Quaternion(axis[0] * s, axis[1] * s, axis[2] * s, math.cos(angle / 2))
+        return quat
     
     def conjugate(self):
-        return Quaternion(-self.x,-self.y,-self.z,self.w)
+        quat = Quaternion(-self.x,-self.y,-self.z,self.w)
+        return quat
     
     @classmethod
     def rotate_vector(cls, v, q): #v = [x,y,z]
@@ -49,35 +61,41 @@ class Quaternion:
             raise TypeError("q must be an instance of the Quaternion class.")
         v = Quaternion(v[0],v[1],v[2],0)
         v = Quaternion.mult(Quaternion.mult(q,v), q.conjugate())
-        return [v.x, v.y, v.z]
+        vec = [v.x, v.y, v.z]
+        return vec
     
     def inverse(self):
         m = self.magnitude()
         if m == 0:
             return Quaternion(0,0,0,0)
         m *= m
-        return Quaternion(-self.x / m, -self.y / m, -self.z / m, self.w / m)
+        quat = Quaternion(-self.x / m, -self.y / m, -self.z / m, self.w / m)
+        return quat
     
     @classmethod
     def difference(cls, a, b):
         if not isinstance(a, cls) or not isinstance(b, cls):
             raise TypeError("Both inputs must be instances of the Quaternion class.")
-        return Quaternion.mult(a.inverse(), b)
+        quat = Quaternion.mult(a.inverse(), b)
+        return quat
 
 class Spline:
     def __init__(self, filepath):
         @staticmethod
         def csv_to_dict(filepath):
             data_dict = {}
-            with open(filepath, newline='') as csvfile:
-                reader = csv.reader(csvfile)
-                headers = next(reader)  # skip header row
-                
-                for i, row in enumerate(reader):
-                    # Convert each value to float
-                    data_dict[i] = [float(x) for x in row]
+            try:
+                with open(filepath, newline='') as csvfile:
+                    reader = csv.reader(csvfile)
+                    headers = next(reader)  # skip header row
+                    
+                    for i, row in enumerate(reader):
+                        # Convert each value to float
+                        data_dict[i] = [float(x) for x in row]
 
-            return data_dict
+                return data_dict
+            except:
+                raise TypeError('Inputted file must be a csv')
         self.dict = csv_to_dict(filepath)
         self.time_list = [row[7] for row in self.dict.values()]
         self.angle_list = [row[6] for row in self.dict.values()]
@@ -101,11 +119,13 @@ class Spline:
     def bezier_cubic(pos0, con0, con1, pos1, t): 
         # goes from pos0 to con0, arrives at pos1 from con1
         s = 1 - t
-        return s**3 * pos0 + 3 * s**2 * t * con0 + 3 * s * t**2 * (2*pos1 - con1) + t**3 * pos1
+        path = s**3 * pos0 + 3 * s**2 * t * con0 + 3 * s * t**2 * (2*pos1 - con1) + t**3 * pos1
+        return path
 
     @staticmethod
     def bezier_cubic_derivative(pos0, con0, con1, pos1, t): #P0,P1,P2,P3
-        return -3 * (1 - t)**2 * pos0 + 3 * (1 - 4*t + 3*t**2)*con0 + 3 * (2 * t - 3 * t**2) * (2 * pos1 - con1) + 3*t**2 * pos1
+        path = -3 * (1 - t)**2 * pos0 + 3 * (1 - 4*t + 3*t**2)*con0 + 3 * (2 * t - 3 * t**2) * (2 * pos1 - con1) + 3*t**2 * pos1
+        return path
 
     def evaluate(self,t):
         #determine what segment t lies in
@@ -152,7 +172,9 @@ class Spline:
         #normalize output
         m = np.sqrt(x*x + y*y + z*z)
 
-        return x/m, y/m, z/m
+        axis = x/m, y/m, z/m
+
+        return axis
 
     def total_rotation(self,t):
         angle_list = self.angle_list
@@ -176,7 +198,9 @@ class Spline:
         angle_list = angle_list[:index]
         angle_list.append(alpha)
         
-        return np.trapezoid(angle_list, time_list)
+        rotation = np.trapezoid(angle_list, time_list)
+
+        return rotation
         
     def sensor(self,sensor,t):
         axis0 = self.tangent_axis(min(self.time_list))
